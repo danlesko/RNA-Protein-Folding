@@ -7,10 +7,11 @@
 from __future__ import print_function
 # Importing some common modules
 import os, sys
+import numpy as py
 
 #main function for our dynamic programming problem
-def linePairing(i,j):
-	S = set()
+def linePairing(data):
+	dataLength
 
 	min_distance = 4
 
@@ -27,8 +28,10 @@ def matchFn(i, j):
 
 	if isMatch in matches:
 		print ("Yes")
+		return True
 	else:
 		print ("No")
+		return False
 
 
 def readString(stringFile):
