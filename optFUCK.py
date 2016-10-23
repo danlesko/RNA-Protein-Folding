@@ -7,36 +7,19 @@
 from __future__ import print_function
 # Importing some common modules
 import os, sys
-import pprint
+import numpy as np
 
 #main function for our dynamic programming problem
 def linePairing(data):
-
 	S = set()
 	dataLength = len(data)
+	OPT_array = createArray(dataLength)
 
-	#create array to store a list of max pairs in a line
-	OPT_array = [[-1 for x in range(dataLength)] for y in range(dataLength)]
-
-	#initilize array to 0s where there can be a possible max # of pairs
-	for k in range(1, min_distance):
-			for i in range(dataLength-k):
-				j = i+k
-				OPT_array[i][j] = 0
-
-	#main function for our program
 	for k in range(min_distance, dataLength):
 		for i in range(dataLength - k):
 			j = i + k
 			OPT_array[i][j] = opt(i, j, data)
 
-	#flip the array so we have opt(1,n) and opt(n,1)
-	for i in range(dataLength):
-		for j in range(0, i):
-			OPT_array[i][j] = OPT_array[j][i]
-
-	pp = pprint.PrettyPrinter(indent=4)
-	pp.pprint(OPT_array)
 
 def opt(i,j, data):
 	
@@ -48,7 +31,7 @@ def opt(i,j, data):
 
 		best = -1;
 
-		for t in range(i, j-min_distance):
+		for t in range(i, j-4):
 			if (matchFn(data[t], data[j])):
 				temp = (1 + opt(i, t-1, data) + opt(t+1, j-1, data))
 				if temp > best:
@@ -57,16 +40,26 @@ def opt(i,j, data):
 
 		return max(notPaired, paired)
 
+def createArray(dataLength):
+	OPT_array = np.empty((dataLength,dataLength))
+	OPT_array[:] = np.NAN
+
+	for k in range(1, min_distance):
+		for i in range(dataLength-k):
+			j = i+k
+			OPT_array[i][j] = 0
+	return OPT_array
+
 def matchFn(i, j):
 	isMatch = i + j
 
 	matches = set(["TW", "WT", "GH", "HG"])
 
 	if isMatch in matches:
-		#print ("Yes")
+		print ("Yes")
 		return True
 	else:
-		#print ("No")
+		print ("No")
 		return False
 
 
@@ -76,7 +69,6 @@ def readString(stringFile):
 
 	return data
 
-#define the max number of pairings that we need between each pair
 min_distance = 4 
 
 # This is the main function that acts as an entry point to your program
