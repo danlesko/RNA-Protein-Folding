@@ -18,11 +18,17 @@ def linePairing(i,j):
 		return 0
 
 def opt(i,j):
+	pass
 
-def match(i, j):
+def matchFn(i, j):
 	isMatch = i + j
 
-	matches = set("TW", "WT", "GH", "HG")
+	matches = set(["TW", "WT", "GH", "HG"])
+
+	if isMatch in matches:
+		print ("Yes")
+	else:
+		print ("No")
 
 
 def readString(stringFile):
@@ -39,7 +45,7 @@ if __name__=="__main__":
 
 	data = readString(stringFile)
 
-	match("T", "W")
+	matchFn("T", "W")
 
 	print (data)
 	print (len(data))
