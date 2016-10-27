@@ -9,6 +9,9 @@ from __future__ import print_function
 import os, sys
 import pprint
 import time
+import functools
+
+memoOPT={}
 
 #main function for our dynamic programming problem
 def linePairing(data):
@@ -26,11 +29,11 @@ def linePairing(data):
 				OPT_array[i][j] = 0
 
 	#main functionality for our program
-
+	#create OPT_array to store line folding lengths
 	start_time = time.time()
-	for k in range(min_distance, dataLength):
-		for i in range(dataLength - k):
-			j = i + k
+	#nested loops for i,j where i must have 4 chars between j
+	for i in range(0, dataLength - min_distance):
+		for j in range(i+min_distance, dataLength):
 			OPT_array[i][j] = opt(i, j, data)
 	elapsed_time = time.time() - start_time
 
@@ -41,9 +44,12 @@ def linePairing(data):
 
 	path(OPT_array, data, 0, dataLength-1, S)
 
+
+
 	print(sorted(S))
 	print(len(S))
 	print(elapsed_time)
+	#print(memoOPT)
 	#pp = pprint.PrettyPrinter(indent=4)
 	#pp.pprint(OPT_array)
 
@@ -53,17 +59,33 @@ def opt(i,j, data):
 		return 0
 
 	else:
-		notPaired = opt(i, j-1, data)
+		if (i,j-1) not in memoOPT:
+			notPaired = opt(i, j-1, data)
+		else:
+			notPaired = memoOPT[(i,j-1)]
 
 		best = -1;
 
 		for t in range(i, j-min_distance):
 			if (matchFn(data[t], data[j])):
-				temp = (1 + opt(i, t-1, data) + opt(t+1, j-1, data))
+
+				if (i, t-1) not in memoOPT:
+					call1 = opt(i, t-1, data)
+				else:
+					call1 = memoOPT[(i, t-1)]
+
+				if (t+1, j-1) not in memoOPT:
+					call2 = opt(t+1, j-1, data)
+				else:
+					call2 = memoOPT[(t+1, j-1)]
+
+				temp = (1 + call1 + call2)
 				if temp > best:
+					#memoOPT[(i,j)] = temp
 					best = temp
 		paired = best
 
+		memoOPT[(i,j)] = max(notPaired, paired)
 		return max(notPaired, paired)
 
 def path(OPT_array, data, i, j, S):
@@ -80,7 +102,7 @@ def path(OPT_array, data, i, j, S):
 
 		#check path to the diagonal
 		elif OPT_array[i][j] == OPT_array[i+1][j-1] + matchFn(data[i], data[j]):
-			print ("Found match!")
+			#print ("Found match!")
 			S.add((i, j))
 			#call opt from new position in matrix
 			path(OPT_array, data, i+1, j-1, S)
@@ -135,6 +157,9 @@ if __name__=="__main__":
 	data = readString(stringFile, stringLength)
 
 	linePairing(data)
+
+	# if (0,11) in memoOPT:
+	# 	print ("It exists!")
 
 	#matchFn("T", "W")
 
