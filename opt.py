@@ -54,6 +54,9 @@ def linePairing(data):
 	#pp.pprint(OPT_array)
 
 def opt(i,j, data):
+
+	if (i,j) in memoOPT:
+		return memoOPT[(i,j)]
 	
 	if (i >= j - min_distance):
 		return 0
