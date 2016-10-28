@@ -55,6 +55,7 @@ def linePairing(data):
 
 def opt(i,j, data):
 
+	#return if already exists
 	if (i,j) in memoOPT:
 		return memoOPT[(i,j)]
 	
