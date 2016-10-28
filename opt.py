@@ -42,11 +42,11 @@ def linePairing(data):
 		for j in range(0, i):
 			OPT_array[i][j] = OPT_array[j][i]
 
-	path(OPT_array, data, 0, dataLength-1, S)
+	#path(OPT_array, data, 0, dataLength-1, S)
 
 
 
-	print(sorted(S))
+	#print(sorted(S))
 	print(len(S))
 	print(elapsed_time)
 	#print(memoOPT)
@@ -169,3 +169,12 @@ if __name__=="__main__":
 
 	print (data)
 	print (len(data))
+
+
+'''
+Times
+
+2000 : 1183.7687077522278
+'''
+
+	
