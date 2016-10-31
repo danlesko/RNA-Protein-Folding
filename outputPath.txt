@@ -1,3 +1,4 @@
+Elapsed Time (s) - 0.0
 Number of Pairs - 2
 Line Pairs: 
 (1, 9)

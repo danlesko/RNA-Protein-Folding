@@ -27,6 +27,7 @@ def linePairing(data):
 
 
 	#fill the OPT_array
+	#keep track of time
 	start_time = time.time()
 	#nested loops for i,j where i must have 4 chars between j
 	for i in range(0, dataLength - min_distance):
@@ -34,12 +35,17 @@ def linePairing(data):
 			OPT_array[i][j] = opt(i, j, data)
 	elapsed_time = time.time() - start_time
 
+	#call to path function, pairs stored in S
 	path(OPT_array, data, 0, dataLength-1, S)
 
 
+	#file I/O
 	f = open('outputPath.txt', 'w')
 
 	S = sorted(S)
+	f.write("Elapsed Time (s) - ")
+	f.write(str(elapsed_time))
+	f.write('\n')
 	f.write("Number of Pairs - ")
 	f.write(str(len(S)))
 	f.write('\n')
@@ -48,26 +54,33 @@ def linePairing(data):
 		f.write(str(elem))
 		f.write('\n')
 
-	#print(len(S))
-	#print(elapsed_time)
-
 def opt(i,j, data):
 
 	#return if already exists
 	if (i,j) in memoOPT:
 		return memoOPT[(i,j)]
 	
+	#return if there is not the min distance between i and j
 	if (i >= j - min_distance):
 		return 0
 
+	#otherwise we enter our sub problems
 	else:
+
+		#call to see there is not a pair
+		#if we don't already have the value memoized,
+		#call the recursive function
 		if (i,j-1) not in memoOPT:
 			notPaired = opt(i, j-1, data)
 		else:
 			notPaired = memoOPT[(i,j-1)]
 
+		#set up to find best pairings
 		best = -1;
 
+		#iterate over t to find the max pairings in
+		#a_1 ... a_t-1 and a_t+1 to a_j-1
+		#return the max
 		for t in range(i, j-min_distance):
 			if (matchFn(data[t], data[j])):
 
@@ -87,7 +100,9 @@ def opt(i,j, data):
 					best = temp
 		paired = best
 
+		#store our max in our dictionary for later use
 		memoOPT[(i,j)] = max(notPaired, paired)
+		#return the max to the OPT_array
 		return max(notPaired, paired)
 
 def path(OPT_array, data, i, j, S):
@@ -140,7 +155,6 @@ def readString(stringFile, stringLength):
 		if stringLength != -1:
 			data = data[:int(stringLength)]
 
-
 	return data
 
 # This is the main function that acts as an entry point for the program
@@ -156,14 +170,6 @@ if __name__=="__main__":
 	data = readString(stringFile, stringLength)
 
 	linePairing(data)
-
-	# if (0,11) in memoOPT:
-	# 	print ("It exists!")
-
-	#matchFn("T", "W")
-
-	#print (data)
-	#print (len(data))
 
 
 '''
