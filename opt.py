@@ -106,22 +106,22 @@ def path(OPT_array, data, i, j, S):
 
 	if i <= j-min_distance:
 
-		#check path under
+		#check path under to see if the same
 		if OPT_array[i][j] == OPT_array[i+1][j]:
 			path(OPT_array, data, i+1, j, S)
 
-		#check path to the left
+		#check path to the left to see if the same
 		elif OPT_array[i][j] == OPT_array[i][j-1]:
 			path(OPT_array, data, i, j-1, S)
 
-		#check path to the diagonal
+		#check path to the diagonal to check for match
 		elif OPT_array[i][j] == OPT_array[i+1][j-1] + matchFn(data[i], data[j]):
-			print ("Found match!")
+			#print ("Found match!")
 			S.add((i, j))
 			#call opt from new position in matrix
 			path(OPT_array, data, i+1, j-1, S)
 
-		#
+		#trace path for smaller sub problems
 		else:
 			for k in range(i, j):
 				if OPT_array[i][j] == OPT_array[i][k] + OPT_array[k+1][j]:
