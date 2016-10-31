@@ -33,7 +33,7 @@ def linePairing(data):
 	# 			OPT_array[i][j] = 0
 
 
-	pp = pprint.PrettyPrinter()
+	#pp = pprint.PrettyPrinter()
 	#main functionality for our program
 	#create OPT_array to store line folding lengths
 
@@ -54,11 +54,20 @@ def linePairing(data):
 	path(OPT_array, data, 0, dataLength-1, S)
 
 
+	f = open('outputPath.txt', 'w')
 
-	print(sorted(S))
+	S = sorted(S)
+	f.write("Number of Pairs - ")
+	f.write(str(len(S)))
+	f.write('\n')
+	f.write("Line Pairs: \n")
+	for elem in S:
+		f.write(str(elem))
+		f.write('\n')
+
 	print(len(S))
 	print(elapsed_time)
-	pp.pprint(OPT_array)
+	#pp.pprint(OPT_array)
 	#print(memoOPT)
 	
 	
