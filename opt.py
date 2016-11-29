@@ -9,7 +9,6 @@ from __future__ import print_function
 import os, sys
 import pprint
 import time
-import functools
 
 #define the max number of pairings that we need between each pair
 min_distance = 4 
@@ -26,17 +25,9 @@ def linePairing(data):
 	#create array to store a list of max pairs in a line
 	OPT_array = [[0 for x in range(dataLength)] for y in range(dataLength)]
 
-	# #initilize array to 0s where there can't be a possible max # of pairs
-	# for k in range(1, min_distance):
-	# 		for i in range(dataLength-k):
-	# 			j = i+k
-	# 			OPT_array[i][j] = 0
 
-
-	pp = pprint.PrettyPrinter()
-	#main functionality for our program
-	#create OPT_array to store line folding lengths
-
+	#fill the OPT_array
+	#keep track of time
 	start_time = time.time()
 	#nested loops for i,j where i must have 4 chars between j
 	for i in range(0, dataLength - min_distance):
@@ -44,24 +35,24 @@ def linePairing(data):
 			OPT_array[i][j] = opt(i, j, data)
 	elapsed_time = time.time() - start_time
 
-
-
-	# #flip the array so we have opt(1,n) and opt(n,1)
-	# for i in range(dataLength):
-	# 	for j in range(0, i):
-	# 		OPT_array[i][j] = OPT_array[j][i]
-
+	#call to path function, pairs stored in S
 	path(OPT_array, data, 0, dataLength-1, S)
 
 
+	#file I/O
+	f = open('outputPath.txt', 'w')
 
-	print(sorted(S))
-	print(len(S))
-	print(elapsed_time)
-	pp.pprint(OPT_array)
-	#print(memoOPT)
-	
-	
+	S = sorted(S)
+	f.write("Elapsed Time (s) - ")
+	f.write(str(elapsed_time))
+	f.write('\n')
+	f.write("Number of Pairs - ")
+	f.write(str(len(S)))
+	f.write('\n')
+	f.write("Line Pairs: \n")
+	for elem in S:
+		f.write(str(elem))
+		f.write('\n')
 
 def opt(i,j, data):
 
@@ -69,17 +60,27 @@ def opt(i,j, data):
 	if (i,j) in memoOPT:
 		return memoOPT[(i,j)]
 	
+	#return if there is not the min distance between i and j
 	if (i >= j - min_distance):
 		return 0
 
+	#otherwise we enter our sub problems
 	else:
+
+		#call to see there is not a pair
+		#if we don't already have the value memoized,
+		#call the recursive function
 		if (i,j-1) not in memoOPT:
 			notPaired = opt(i, j-1, data)
 		else:
 			notPaired = memoOPT[(i,j-1)]
 
+		#set up to find best pairings
 		best = -1;
 
+		#iterate over t to find the max pairings in
+		#a_1 ... a_t-1 and a_t+1 to a_j-1
+		#return the max
 		for t in range(i, j-min_distance):
 			if (matchFn(data[t], data[j])):
 
@@ -99,7 +100,9 @@ def opt(i,j, data):
 					best = temp
 		paired = best
 
+		#store our max in our dictionary for later use
 		memoOPT[(i,j)] = max(notPaired, paired)
+		#return the max to the OPT_array
 		return max(notPaired, paired)
 
 def path(OPT_array, data, i, j, S):
@@ -152,7 +155,6 @@ def readString(stringFile, stringLength):
 		if stringLength != -1:
 			data = data[:int(stringLength)]
 
-
 	return data
 
 # This is the main function that acts as an entry point for the program
@@ -168,14 +170,6 @@ if __name__=="__main__":
 	data = readString(stringFile, stringLength)
 
 	linePairing(data)
-
-	# if (0,11) in memoOPT:
-	# 	print ("It exists!")
-
-	#matchFn("T", "W")
-
-	print (data)
-	print (len(data))
 
 
 '''
@@ -198,10 +192,42 @@ Times
 
 http://arachnoid.com/polysolve/
 
-y = -9.4970592370022544e-001 +
-     2.0620252595857314e-002 x +
-    -5.0119999725530277e-005 x^2 +
-     1.6794874675138318e-007 x^3
+
+Second Set - Randomized
+
+100  : 0.12000679969787598
+200  : 1.0020573139190674
+300  : 3.498199939727783
+400  : 8.509486675262451
+500  : 17.170982122421265
+600  : 29.522688388824463 
+700  : 48.67878437042236
+800  : 72.61715340614319
+900  : 103.16590070724487
+1000 : 143.08318376541138
+1100 : 196.51523995399475
+1200 : 254.38555002212524
+1300 : 325.81263542175293
+1400 : 405.2131769657135
+1500 : 502.38073468208313
+
+Third - All Input The Same (No Pairs)
+
+1500 : 361.3236663341522
+1400 : 297.2346598123984
+1300 : 235.5744743347168
+1200 : 184.50655317306519
+1100 : 142.30013918876648
+1000 : 105.01300644874573
+900  : 76.81339359283447
+800  : 54.9501428604126
+700  : 36.10606527328491
+600  : 22.770302295684814
+500  : 12.975742101669312
+400  : 6.611378192901611
+300  : 2.736156463623047
+200  : 0.8110463619232178
+100  : 0.09700560569763184
 
 
 '''
